@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Category;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Http\Requests\StoreCategoryRequest;
@@ -19,11 +18,14 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
+        abort_if(! auth()->user()->tokenCan('categories-show'), 403);
+        
         return new CategoryResource($category);
     }
 
     public function list()
     {
+        abort_if(! auth()->user()->tokenCan('categories-list'), 403);
         return CategoryResource::collection(Category::all());
     }
 
